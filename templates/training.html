@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 24px;
+            width: 120px;
+            height: 80px;
+            cursor: pointer;
+            text-align: center;
+            border: 1px solid #000;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        #up-button {
+            color: blue;
+        }
+
+        #down-button {
+            color: red;
+        }
+    </style>
+    <script>
+        document.onkeydown = function(e) {
+            switch (e.keyCode) {
+                case 38:
+                    document.getElementById('up-button').click();
+                    break;
+                case 40:
+                    document.getElementById('down-button').click();
+                    break;
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>Trainning Classifier, use up or down to classify image:</h1>
+    <img src="{{ url_for('static', filename=image_path) }}" alt="Trend Image" />
+    <form method="POST" id="classification-form">
+        <input type="hidden" name="image_name" value="{{ image_path }}" />
+        <input type="hidden" name="description" id="description-input" />
+        <div id="button-container">
+            <div id="down-button" class="button">
+                <div>&#8595;</div>
+                <div>Down</div>
+            </div>
+            <div id="up-button" class="button">
+                <div>&#8593;</div>
+                <div>Up</div>
+            </div>
+        </div>
+    </form>
+    <script>
+        document.getElementById('up-button').onclick = function() {
+            document.getElementById('description-input').value = 'up';
+            document.getElementById('classification-form').submit();
+        };
+        document.getElementById('down-button').onclick = function() {
+            document.getElementById('description-input').value = 'down';
+            document.getElementById('classification-form').submit();
+        };
+    </script>
+</body>
+</html>
+{% endblock %}

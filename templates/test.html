@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+        }
+
+        .button {
+            padding: 20px 40px;
+            margin: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 220px;
+            /* set a fixed width */
+            text-align: center;
+            /* center the text */
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: black;
+            cursor: pointer;
+        }
+
+        label:hover {
+            background-color: #45a049;
+            color: white;
+        }
+
+        #prediction {
+            font-size: 24px;
+            margin-top: 50px;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #prediction {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="margin-bottom:50px;">Check classification algorithm:</h1>
+
+    <div class="content">
+        <form action="/test" method="post" enctype="multipart/form-data">
+            <label for="file-upload" class="button" style="margin-top:20px">Upload and Analyze Image</label>
+            <input id="file-upload" type="file" name="image" accept=".png,.jpg" onchange="this.form.submit()">
+        </form>
+        <!-- Add this for the loading spinner -->
+        <img id="loading-spinner" src="{{ url_for('static', filename='loading.gif') }}" alt="Loading...">
+        {% if prediction %}
+        <div id="prediction">
+            {% if image_path %}
+            <img src="{{ image_path }}" alt="Uploaded Image">
+            {% endif %}
+            <p class="prediction">{% if prediction %}Prediction: {{ prediction }}{% endif %}</p>
+        </div>
+        {% else %}
+        <div id="prediction"></div>
+        {% endif %}
+    </div>
+    <script>
+        const form = document.getElementById('image-form');
+        const fileInput = document.getElementById('file-upload');
+        const spinner = document.getElementById('loading-spinner');
+
+        fileInput.addEventListener('change', function (event) {
+            event.preventDefault();
+            spinner.style.display = 'block'; // Show loading spinner
+
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: form.method,
+                body: formData
+            }).then(response => response.text())
+                .then(html => {
+                    document.querySelector('.content').innerHTML = html;
+                    spinner.style.display = 'none'; // Hide loading spinner
+                });
+        });
+    </script>
+</body>
+
+</html>
+{% endblock %}
